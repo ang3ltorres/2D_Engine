@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.29)
+project(2D_Engine LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+add_compile_options(-Wall -pedantic -Wextra)
+link_libraries(windowscodecs d2d1 kernel32 user32 gdi32)
+add_compile_definitions(UNICODE)
+add_link_options(-municode)
+
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+add_executable(2D_Engine WIN32 ${SOURCES})
+target_include_directories(2D_Engine PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
