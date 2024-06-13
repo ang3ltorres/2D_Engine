@@ -1,81 +1,78 @@
+#include "window.hpp"
 #include "graphics.hpp"
+#include "texture.hpp"
+#include "sprite.hpp"
 
-#include <Windows.h>
-#include <d2d1.h>
-
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+// Resized callback
+void resized(unsigned int width, unsigned int height)
 {
-	if (uMsg == WM_DESTROY)
-	{
-		PostQuitMessage(0);
-		return 0;
-	}
+	Graphics::render->Resize(D2D1::SizeU(width, height));
 
-	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+	auto renderSize = reinterpret_cast<RenderTexture*>(Graphics::data)->texture->bitmap->GetPixelSize();
+	unsigned int scaleX = width / renderSize.width;
+	unsigned int scaleY = height / renderSize.height;
+
+	Window::scale = scaleX < scaleY ? scaleX : scaleY;
+
+	Window::offsetX = (width - renderSize.width * Window::scale) / 2;
+	Window::offsetY = (height - renderSize.height * Window::scale) / 2;
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+	unsigned int windowWidth = 256;
+	unsigned int windowHeight = 240;
+
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(pCmdLine);
 
-	WNDCLASSEX windowClass;
-	ZeroMemory(&windowClass, sizeof(WNDCLASSEX));
-	windowClass.cbSize = sizeof(WNDCLASSEX);
-	windowClass.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	windowClass.hInstance = hInstance;
-	windowClass.lpfnWndProc = WindowProc;
-	windowClass.lpszClassName = L"MainWindow";
-	windowClass.style = CS_HREDRAW | CS_VREDRAW;
+	Window::initialize(windowWidth, windowHeight, "D2D UwU", hInstance, nCmdShow);
+	Graphics::initialize(Window::hwnd);
 
-	RegisterClassEx(&windowClass);
-	RECT rect = { 0, 0, 800, 800 };
-	AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW);
-	HWND hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MainWindow", L"D2D", WS_OVERLAPPEDWINDOW, 100, 100, rect.right - rect.left, rect.bottom - rect.top, NULL, NULL, hInstance, NULL);
-	ShowWindow(hwnd, nCmdShow);
-
-	MSG msg;
-	ZeroMemory(&msg, sizeof(MSG));
-	msg.message = WM_NULL;
-	
+	// DEBUG / TEST
 	Rect r{0.0f, 0.0f, 20.0f, 20.0f};
+	Texture *txr = new Texture("../res/texture.png");
+	Sprite *spr = new Sprite(txr);
 
-	Graphics::initialize(hwnd);
-	RenderTexture rt(200, 200);
-	rt.beginDraw();
-	Graphics::clear({0, 255, 0});
-	r.draw({255, 0, 255});
-	rt.endDraw();
+	spr->origin = {256.0f / 2.0f, 240.0f / 2.0f};
+	spr->rotation = 45.0f;
+	spr->destination = {32.0f, 32.0f, 16.0f * 4.0f, 27.0f * 4.0f};
+	spr->source = {0.0f, 0.0f, 16.0f, 27.0f};
 
-	RenderTexture rtCopy(rt);
+	spr->totalFrames = 2;
+	spr->currentFrame = 0;
+	spr->animationSpeed = 50.0f;
 
+	RenderTexture *rt = new RenderTexture(256, 240);
+	
+	Window::resizedCallback = &resized;
+	Graphics::data = rt;
+	Window::resizedCallback(windowWidth, windowHeight);
 
-	while (true)
+	while (!Window::shouldClose())
 	{
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT)
-				return 0;
-
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
+		Graphics::calculateDeltaTime();
 		r.pos.x++;
 		r.size.y++;
 
+		rt->beginDraw();
+			Graphics::clear({0, 255, 0});
+			r.draw({255, 0, 255});
+			spr->draw();
+			spr->draw({100, 100, 64, 64});
+		rt->endDraw();
+
 		Graphics::beginDraw();
-		Graphics::clear({0, 100, 255});
-
-		rt.draw();
-		rtCopy.draw({400, 400, 300, 300});
-		r.draw({255, 0, 0, 125});
-
+			Graphics::clear({0, 100, 255});
+			rt->draw(Rect{ (float)Window::offsetX, (float)Window::offsetY, 256.0f * Window::scale, 240.0f * Window::scale });
 		Graphics::endDraw();
-
 	}
 
+	delete rt;
+	delete spr;
+	delete txr;
 	Graphics::finalize();
-	UnregisterClass(windowClass.lpszClassName, hInstance);
+	Window::finalize();
+
 	return 0;
 }

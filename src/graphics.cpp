@@ -1,64 +1,27 @@
 #include "graphics.hpp"
+#include "window.hpp"
 
 #include <Windows.h>
+#include <cstdio>
+
+// Local
+LARGE_INTEGER frequency;
+LARGE_INTEGER lastTime;
 
 // Static members
+double Graphics::deltaTime = 0.0f;
+void *Graphics::data = nullptr;
 ID2D1Factory *Graphics::factory = nullptr;
 ID2D1HwndRenderTarget *Graphics::render = nullptr;
 ID2D1SolidColorBrush *Graphics::brush = nullptr;
 ID2D1RenderTarget *Graphics::currentTarget = nullptr;
 
-// Static helpers
-static const auto D2DColor = [](const Color &color) -> D2D_COLOR_F
-{
-	return {color.r / 255.0f, color.g / 255.0f, color.b / 255.0f, color.a / 255.0f};
-};
-
-// Struct Color
-Color::Color()
-: r(0), g(0), b(0), a(0) {}
-
-Color::Color(const Color &other)
-: r(other.r), g(other.g), b(other.b), a(other.a) {}
-
-Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-: r(r), g(g), b(b), a(a) {}
-
-// Struct Vector2
-Vector2::Vector2()
-: x(0.0f), y(0.0f) {}
-
-Vector2::Vector2(const Vector2 &other)
-: x(other.x), y(other.y) {}
-
-Vector2::Vector2(float x, float y)
-: x(x), y(y) {}
-
-// Struct Rect
-Rect::Rect()
-: pos(0.0f, 0.0f), size(0.0f, 0.0f) {}
-
-Rect::Rect(const Rect &other)
-: pos(other.pos), size(other.size) {}
-
-Rect::Rect(float x, float y, float w, float h)
-: pos(x, y), size(w, h) {}
-
-Rect::Rect(const Vector2 &pos, const Vector2 &size)
-: pos(pos), size(size) {}
-
-void Rect::draw(const Color &color)
-{
-	Graphics::brush->SetColor(D2DColor(color));
-	Graphics::currentTarget->FillRectangle({pos.x, pos.y, pos.x + size.x, pos.y + size.y}, Graphics::brush);
-}
-
 RenderTexture::RenderTexture(const RenderTexture &other)
-: RenderTexture::RenderTexture(other.bitmap->GetPixelSize().width, other.bitmap->GetPixelSize().height)
+: RenderTexture::RenderTexture(other.texture->bitmap->GetPixelSize().width, other.texture->bitmap->GetPixelSize().height)
 {	
 	const D2D1_POINT_2U destination = {0, 0};
-	const D2D1_RECT_U source = {0, 0, other.bitmap->GetPixelSize().width, other.bitmap->GetPixelSize().height};
-	bitmap->CopyFromBitmap(&destination, other.bitmap, &source);
+	const D2D1_RECT_U source = {0, 0, other.texture->bitmap->GetPixelSize().width, other.texture->bitmap->GetPixelSize().height};
+	texture->bitmap->CopyFromBitmap(&destination, other.texture->bitmap, &source);
 }
 
 RenderTexture::RenderTexture(unsigned int width, unsigned int height)
@@ -84,12 +47,25 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height)
 		&renderTarget
 	);
 
-	renderTarget->GetBitmap(&bitmap);
+	texture = new Texture();
+
+	origin = Vector2( {0.0f, 0.0f} );
+	rotation = 0.0f;
+	destination = Rect( 0.0f, 0.0f, (float)width, (float)height );
+	source = Rect( 0.0f, 0.0f, (float)width, (float)height );
+
+	totalFrames = 0;
+	currentFrame = 0;
+
+	texture->width = width;
+	texture->height = height;
+
+	renderTarget->GetBitmap(&texture->bitmap);
 }
 
 RenderTexture::~RenderTexture()
 {
-	bitmap->Release();
+	delete texture;
 	renderTarget->Release();
 }
 
@@ -101,78 +77,14 @@ void RenderTexture::beginDraw()
 
 void RenderTexture::endDraw()
 {
-	Graphics::resetTarget();
 	renderTarget->EndDraw();
-}
-
-void RenderTexture::draw()
-{
-	Graphics::currentTarget->DrawBitmap
-	(
-		bitmap,
-		{
-			0.0f,
-			0.0f,
-			float(bitmap->GetPixelSize().width),
-			float(bitmap->GetPixelSize().height)
-		},
-		1.0f,
-		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		{
-			0.0f,
-			0.0f,
-			float(bitmap->GetPixelSize().width),
-			float(bitmap->GetPixelSize().height)
-		}
-	);
-}
-
-void RenderTexture::draw(const Rect &destination)
-{
-	Graphics::currentTarget->DrawBitmap
-	(
-		bitmap,
-		{
-			destination.pos.x,
-			destination.pos.y,
-			destination.pos.x + destination.size.x,
-			destination.pos.y + destination.size.y
-		},
-		1.0f,
-		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		{
-			0.0f,
-			0.0f,
-			float(bitmap->GetPixelSize().width),
-			float(bitmap->GetPixelSize().height)
-		}
-	);
-}
-
-void RenderTexture::draw(const Rect &destination, const Rect &source)
-{
-	Graphics::currentTarget->DrawBitmap
-	(
-		bitmap,
-		{
-			destination.pos.x,
-			destination.pos.y,
-			destination.pos.x + destination.size.x,
-			destination.pos.y + destination.size.y
-		},
-		1.0f,
-		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		{
-			source.pos.x,
-			source.pos.y,
-			source.size.x,
-			source.size.y
-		}
-	);
 }
 
 void Graphics::initialize(HWND &hwnd)
 {
+	// Initilize COM
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
 	// Create factory
 	const D2D1_FACTORY_OPTIONS factoryOptions = { .debugLevel = D2D1_DEBUG_LEVEL::D2D1_DEBUG_LEVEL_NONE };
 	D2D1CreateFactory(D2D1_FACTORY_TYPE::D2D1_FACTORY_TYPE_SINGLE_THREADED, factoryOptions, &factory);
@@ -195,10 +107,16 @@ void Graphics::initialize(HWND &hwnd)
 		.hwnd = hwnd,
 		.pixelSize = { .width = (UINT32)rect.right, .height = (UINT32)rect.bottom },
 		.presentOptions = D2D1_PRESENT_OPTIONS::D2D1_PRESENT_OPTIONS_NONE
+		// Disable VSync
+		// .presentOptions = D2D1_PRESENT_OPTIONS::D2D1_PRESENT_OPTIONS_IMMEDIATELY
 	};
 
 	factory->CreateHwndRenderTarget(rtProperties, hwndRtProperties, &render);
-	
+
+	// Delta Time
+	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&lastTime);
+
 	// Set as initial target
 	currentTarget = render;
 
@@ -209,9 +127,46 @@ void Graphics::initialize(HWND &hwnd)
 
 void Graphics::finalize()
 {
+	CoUninitialize();
 	brush->Release();
 	render->Release();
 	factory->Release();
+}
+
+void Graphics::toggleFullscreen(HWND hwnd)
+{
+	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+
+	if ((style & WS_POPUP) == 0)
+	{
+		GetWindowRect(hwnd, &Window::savedRect);
+
+		SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		SetWindowPos(hwnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_FRAMECHANGED);
+	}
+	else
+	{
+		// Calculate window position to center it on the screen
+		int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+		int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+		int posX = (screenWidth - (Window::savedRect.right - Window::savedRect.left)) / 2;
+		int posY = (screenHeight - (Window::savedRect.bottom - Window::savedRect.top)) / 2;
+
+		// Re-Center window
+		SetWindowLongPtr(hwnd, GWL_STYLE, Window::savedStyle & ~WS_POPUP);
+		SetWindowPos(hwnd, HWND_NOTOPMOST,
+					posX, posY,
+					Window::savedRect.right - Window::savedRect.left, Window::savedRect.bottom - Window::savedRect.top,
+					SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
+	}
+}
+
+void Graphics::calculateDeltaTime()
+{
+	LARGE_INTEGER currentTime;
+	QueryPerformanceCounter(&currentTime);
+	deltaTime = ((double)(currentTime.QuadPart - lastTime.QuadPart)) / frequency.QuadPart;
+	lastTime = currentTime;
 }
 
 void Graphics::resetTarget()
