@@ -1,0 +1,142 @@
+#include <windows.h>
+#include <mmdeviceapi.h>
+#include <audioclient.h>
+#include <functiondiscoverykeys_devpkey.h> // for device property keys
+
+#pragma comment(lib, "Mmdevapi.lib")
+#pragma comment(lib, "Kernel32.lib")
+
+// Define your PCM data
+const int sampleRate = 44100;
+const int durationSeconds = 5;
+const int bufferSize = sampleRate * durationSeconds;
+short buffer[bufferSize];
+
+// Function to fill your buffer with audio data
+
+HRESULT PlaySound()
+{
+	CoInitialize(NULL);
+
+	// Enumerate audio endpoint devices (optional)
+	IMMDeviceEnumerator *pEnumerator = NULL;
+	HRESULT hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnumerator);
+	if (FAILED(hr))
+	{
+		CoUninitialize();
+		return hr;
+	}
+
+	IMMDevice *pDevice = NULL;
+	hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDevice);
+	if (FAILED(hr))
+	{
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+
+	// Activate the audio client
+	IAudioClient *pAudioClient = NULL;
+	hr = pDevice->Activate(__uuidof(IAudioClient), CLSCTX_ALL, NULL, (void**)&pAudioClient);
+	if (FAILED(hr))
+	{
+		pDevice->Release();
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+
+	// Initialize the audio client
+	WAVEFORMATEX *pwfx = new WAVEFORMATEX();
+	pwfx->wFormatTag = WAVE_FORMAT_PCM;
+	pwfx->nChannels = 2;
+	pwfx->nSamplesPerSec = sampleRate;
+	pwfx->nAvgBytesPerSec = sampleRate * 2 * 2; // 2 channels * 16 bits per sample
+	pwfx->nBlockAlign = 4;
+	pwfx->wBitsPerSample = 16;
+	pwfx->cbSize = 0;
+
+	hr = pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, 10000000, 0, pwfx, NULL);
+	if (FAILED(hr))
+	{
+		pAudioClient->Release();
+		pDevice->Release();
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+
+	// Get the audio render client
+	IAudioRenderClient *pRenderClient = NULL;
+	hr = pAudioClient->GetService(__uuidof(IAudioRenderClient), (void**)&pRenderClient);
+	if (FAILED(hr))
+	{
+		pAudioClient->Release();
+		pDevice->Release();
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+
+	// Write data to the audio buffer
+	BYTE *pData;
+	hr = pRenderClient->GetBuffer(bufferSize, &pData);
+	if (FAILED(hr))
+	{
+		pRenderClient->Release();
+		pAudioClient->Release();
+		pDevice->Release();
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+	memcpy(pData, buffer, bufferSize);
+	hr = pRenderClient->ReleaseBuffer(bufferSize, 0);
+	if (FAILED(hr))
+	{
+		pRenderClient->Release();
+		pAudioClient->Release();
+		pDevice->Release();
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+
+	// Start playing
+	hr = pAudioClient->Start();
+	if (FAILED(hr))
+	{
+		pRenderClient->Release();
+		pAudioClient->Release();
+		pDevice->Release();
+		pEnumerator->Release();
+		CoUninitialize();
+		return hr;
+	}
+
+	// Wait for playback to complete
+	Sleep(static_cast<DWORD>(1000 * durationSeconds));
+
+	// Clean up
+	pRenderClient->Release();
+	pAudioClient->Release();
+	pDevice->Release();
+	pEnumerator->Release();
+	CoUninitialize();
+
+	return S_OK;
+}
+
+int main()
+{
+	// Fill buffer with audio data
+	// play sound
+	HRESULT hr = PlaySound();
+	if (FAILED(hr))
+	{
+		// Handle error
+	}
+
+	return 0;
+}
