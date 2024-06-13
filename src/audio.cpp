@@ -1,9 +1,13 @@
 #include "audio.hpp"
 
+#include <cstdio>
+#include <vorbis/vorbisfile.h>
+#include <ogg/ogg.h>
 #include <mmdeviceapi.h>
+#include <audioclient.h>
 
-IAudioClient *Audio::pAudioClient = nullptr;
-IAudioRenderClient *Audio::pRenderClient = nullptr;
+IAudioClient *pAudioClient = nullptr;
+IAudioRenderClient *pRenderClient = nullptr;
 
 bool Audio::initialize()
 {
@@ -46,6 +50,27 @@ bool Audio::finalize()
 
 Sound loadSound(const std::string &fileName)
 {
-	
-}
+	OggVorbis_File oggFile;
+	vorbis_info *vorbisInfo;
+	FILE *file;
+	int errorCode;
+	char *buffer;
 
+	file = fopen(fileName.c_str(), "rb");
+	ov_open(file, &oggFile, NULL, 0);
+	vorbisInfo = ov_info(&oggFile, -1);
+
+	long totalSamples = ov_pcm_total(&oggFile, -1);
+	buffer = (char*)malloc(totalSamples * sizeof(float));
+	ov_read(&oggFile, buffer, totalSamples * sizeof(float), 0, 2, 1, nullptr);
+
+	ov_clear(&oggFile);
+	fclose(file);
+
+	return Sound
+	{
+		fileName,
+		totalSamples,
+		buffer
+	};
+}

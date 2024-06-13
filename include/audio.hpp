@@ -1,13 +1,12 @@
 #pragma once
 
 #include <string>
-#include <audioclient.h>
 
 struct Sound
 {
 	std::string soundName;
-	unsigned int totalSamples;
-	unsigned char *data;
+	long totalSamples;
+	char *data;
 };
 
 class Audio
@@ -20,7 +19,4 @@ public:
 	static bool finalize();
 
 	static Sound loadSound(const std::string &fileName);
-
-	static IAudioClient *pAudioClient;
-	static IAudioRenderClient *pRenderClient;
 };
