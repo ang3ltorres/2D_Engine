@@ -15,8 +15,8 @@ public:
 	Audio() = delete;
 	~Audio() = default;
 
-	static bool initialize();
-	static bool finalize();
+	static void initialize();
+	static void finalize();
 
 	static Sound loadSound(const std::string &fileName);
 };

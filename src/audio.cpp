@@ -9,7 +9,7 @@
 IAudioClient *pAudioClient = nullptr;
 IAudioRenderClient *pRenderClient = nullptr;
 
-bool Audio::initialize()
+void Audio::initialize()
 {
 	IMMDeviceEnumerator *pEnumerator = nullptr;
 	IMMDevice *pDevice = nullptr;
@@ -38,11 +38,9 @@ bool Audio::initialize()
 
 	// Get the audio render client
 	pAudioClient->GetService(__uuidof(IAudioRenderClient), (void**)&pRenderClient);
-
-	return true;
 }
 
-bool Audio::finalize()
+void Audio::finalize()
 {
 	pRenderClient->Release();
 	pAudioClient->Release();
