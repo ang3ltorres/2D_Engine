@@ -3,12 +3,14 @@
 
 #include <codecvt>
 #include <locale>
+#include <string>
 
-std::wstring toWideString(const std::string &string)
-{
-	static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter{};
+std::wstring toWideString(const std::string &string) {
 
-	return converter.from_bytes(string);
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, string.c_str(), static_cast<int>(string.size()), nullptr, 0);
+	std::wstring wideString(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, string.c_str(), static_cast<int>(string.size()), &wideString[0], size_needed);
+	return wideString;
 }
 
 // Struct Color

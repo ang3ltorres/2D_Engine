@@ -93,11 +93,17 @@ void Window::initialize(int width, int height, const std::string &windowName, HI
 
 	ZeroMemory(&Window::msg, sizeof(MSG));
 	Window::msg.message = WM_NULL;
+
+	// Initilize COM
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 }
 
 void Window::finalize()
 {
 	UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
+
+	// Unitilize COM
+	CoUninitialize();
 }
 
 bool Window::shouldClose()

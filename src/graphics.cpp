@@ -82,9 +82,6 @@ void RenderTexture::endDraw()
 
 void Graphics::initialize(HWND &hwnd)
 {
-	// Initilize COM
-	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
 	// Create factory
 	const D2D1_FACTORY_OPTIONS factoryOptions = { .debugLevel = D2D1_DEBUG_LEVEL::D2D1_DEBUG_LEVEL_NONE };
 	D2D1CreateFactory(D2D1_FACTORY_TYPE::D2D1_FACTORY_TYPE_SINGLE_THREADED, factoryOptions, &factory);

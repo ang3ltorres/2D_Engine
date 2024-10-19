@@ -14,9 +14,6 @@ void Audio::initialize()
 	IMMDeviceEnumerator *pEnumerator = nullptr;
 	IMMDevice *pDevice = nullptr;
 
-	// Initialize COM
-	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
 	// Initialize the windows WASAPI API
 	CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&pEnumerator);
 	pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDevice);
@@ -49,14 +46,11 @@ void Audio::finalize()
 Sound loadSound(const std::string &fileName)
 {
 	OggVorbis_File oggFile;
-	vorbis_info *vorbisInfo;
 	FILE *file;
-	int errorCode;
 	char *buffer;
 
 	file = fopen(fileName.c_str(), "rb");
 	ov_open(file, &oggFile, NULL, 0);
-	vorbisInfo = ov_info(&oggFile, -1);
 
 	long totalSamples = ov_pcm_total(&oggFile, -1);
 	buffer = (char*)malloc(totalSamples * sizeof(float));

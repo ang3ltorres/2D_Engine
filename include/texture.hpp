@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include <d2d1.h>
+
+struct ID2D1Bitmap;
 
 class Texture
 {
