@@ -34,14 +34,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	Texture *txr = new Texture("../res/texture.png");
 	Sprite *spr = new Sprite(txr);
 
-	spr->origin = {256.0f / 2.0f, 240.0f / 2.0f};
+	spr->origin = {16.0f/2.0f*4, 27.0f/2.0f*4};
 	spr->rotation = 45.0f;
-	spr->destination = {32.0f, 32.0f, 16.0f * 4.0f, 27.0f * 4.0f};
+	spr->destination = {64.0f, 64.0f, 16.0f*4, 27.0f*4};
 	spr->source = {0.0f, 0.0f, 16.0f, 27.0f};
 
 	spr->totalFrames = 2;
 	spr->currentFrame = 0;
-	spr->animationSpeed = 50.0f;
+	spr->animationSpeed = 2.0f;
 
 	RenderTexture *rt = new RenderTexture(256, 240);
 	
@@ -59,12 +59,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 			Graphics::clear({0, 255, 0});
 			r.draw({255, 0, 255});
 			spr->draw();
-			spr->draw({100, 100, 64, 64});
+			spr->rotation += 16.0f;
 		rt->endDraw();
 
 		Graphics::beginDraw();
 			Graphics::clear({0, 100, 255});
-			rt->draw(Rect{ (float)Window::offsetX, (float)Window::offsetY, 256.0f * Window::scale, 240.0f * Window::scale });
+			rt->destination = Rect{ (float)Window::offsetX, (float)Window::offsetY, 256.0f * Window::scale, 240.0f * Window::scale };
+			rt->draw();
 		Graphics::endDraw();
 	}
 

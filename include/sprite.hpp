@@ -11,8 +11,6 @@ public:
 	~Sprite() = default;
 
 	void draw();
-	void draw(const Rect &destination);
-	void draw(const Rect &destination, const Rect &source);
 
 	Texture *texture;
 
@@ -22,8 +20,8 @@ public:
 	Rect source;
 
 	// Animation
-	unsigned int totalFrames;
-	unsigned int currentFrame;
+	unsigned char totalFrames;
+	unsigned char currentFrame;
 	float animationSpeed;
 	float animationTime;
 };

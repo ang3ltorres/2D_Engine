@@ -28,21 +28,12 @@ Sprite::Sprite(Texture *texture)
 	animationTime = 0.0f;
 }
 
-static void updateAnimation(Sprite *sprite)
-{
-	if (sprite->animationSpeed == 0.0f)
-		return;
-
-	sprite->animationTime += (Graphics::deltaTime * 100.0f);
-	if (sprite->animationTime >= sprite->animationSpeed)
-	{
-		sprite->animationTime = 0.0f;
-		sprite->currentFrame = (sprite->currentFrame < sprite->totalFrames - 1) ? sprite->currentFrame + 1 : 0;
-	}
-}
-
 void Sprite::draw()
 {
+	D2D1_MATRIX_3X2_F transform = D2D1::Matrix3x2F::Identity();
+	transform = D2D1::Matrix3x2F::Rotation(rotation, D2D1_POINT_2F{origin.x + destination.pos.x, origin.y + destination.pos.y}) * transform;
+	Graphics::currentTarget->SetTransform(transform);
+
 	Graphics::currentTarget->DrawBitmap
 	(
 		texture->bitmap,
@@ -62,53 +53,16 @@ void Sprite::draw()
 		}
 	);
 
-	updateAnimation(this);
-}
+	Graphics::currentTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-void Sprite::draw(const Rect &destination)
-{
-	Graphics::currentTarget->DrawBitmap
-	(
-		texture->bitmap,
-		{
-			.left = destination.pos.x,
-			.top = destination.pos.y,
-			.right = destination.pos.x + destination.size.x,
-			.bottom = destination.pos.y + destination.size.y
-		},
-		1.0f,
-		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		{
-			.left = source.pos.x + (currentFrame * source.size.x),
-			.top = source.pos.y,
-			.right = source.pos.x + source.size.x + (currentFrame * source.size.x),
-			.bottom = source.pos.y + source.size.y
-		}
-	);
+	// Update animation
+	if (animationSpeed == 0.0f || totalFrames == 0)
+		return;
 
-	updateAnimation(this);
-}
-
-void Sprite::draw(const Rect &destination, const Rect &source)
-{
-	Graphics::currentTarget->DrawBitmap
-	(
-		texture->bitmap,
-		{
-			.left = destination.pos.x,
-			.top = destination.pos.y,
-			.right = destination.pos.x + destination.size.x,
-			.bottom = destination.pos.y + destination.size.y
-		},
-		1.0f,
-		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		{
-			.left = source.pos.x + (currentFrame * source.size.x),
-			.top = source.pos.y,
-			.right = source.pos.x + source.size.x + (currentFrame * source.size.x),
-			.bottom = source.pos.y + source.size.y
-		}
-	);
-
-	updateAnimation(this);
+	animationTime += Graphics::deltaTime;
+	if (animationTime >= animationSpeed)
+	{
+		animationTime = 0.0f;
+		currentFrame = (currentFrame < totalFrames - 1) ? currentFrame + 1 : 0;
+	}
 }
