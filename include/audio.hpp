@@ -2,21 +2,21 @@
 
 #include <string>
 
-struct Sound
-{
-	std::string soundName;
-	long totalSamples;
-	char *data;
-};
-
-class Audio
+class Audio 
 {
 public:
-	Audio() = delete;
-	~Audio() = default;
-
 	static void initialize();
 	static void finalize();
+};
 
-	static Sound loadSound(const std::string &fileName);
+class Sound
+{
+public:
+	Sound(const std::string &fileName);
+	~Sound();
+	void play();
+
+	void *wav;
+	unsigned char *data;
+	int sampleCount;
 };

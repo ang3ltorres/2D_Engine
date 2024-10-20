@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <d2d1.h>
 
-std::function<void(unsigned int, unsigned int)> Window::resizedCallback{};
+std::function<void(unsigned int, unsigned int)> Window::resizedCallback = nullptr;
 
 MSG Window::msg;
 HWND Window::hwnd;

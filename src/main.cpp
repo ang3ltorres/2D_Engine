@@ -2,6 +2,7 @@
 #include "graphics.hpp"
 #include "texture.hpp"
 #include "sprite.hpp"
+#include "audio.hpp"
 
 // Resized callback
 void resized(unsigned int width, unsigned int height)
@@ -28,6 +29,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
 	Window::initialize(windowWidth, windowHeight, "D2D UwU", hInstance, nCmdShow);
 	Graphics::initialize(Window::hwnd);
+	Audio::initialize();
+
+	Sound snd{"../res/untitled.ogg"};
+	snd.play();
 
 	// DEBUG / TEST
 	Rect r{0.0f, 0.0f, 20.0f, 20.0f};
