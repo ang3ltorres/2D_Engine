@@ -3,6 +3,7 @@
 #include "texture.hpp"
 #include "sprite.hpp"
 #include "audio.hpp"
+#include "input.hpp"
 
 // Resized callback
 void resized(unsigned int width, unsigned int height)
@@ -30,6 +31,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	Window::initialize(windowWidth, windowHeight, "D2D UwU", hInstance, nCmdShow);
 	Graphics::initialize(Window::hwnd);
 	Audio::initialize();
+	Input::initialize();
 
 	Sound snd{"../res/untitled.ogg"};
 	snd.play();
@@ -57,6 +59,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	while (!Window::shouldClose())
 	{
 		Graphics::calculateDeltaTime();
+		Input::update();
+		if (Input::keyPressed[Input::Actions::UP]) printf("DOWN");
 		r.pos.x++;
 		r.size.y++;
 
@@ -77,6 +81,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 	delete rt;
 	delete spr;
 	delete txr;
+	Input::finalize();
+	Audio::finalize();
 	Graphics::finalize();
 	Window::finalize();
 

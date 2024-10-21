@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 add_compile_options(-Wall -pedantic --max-errors=1)
-link_libraries(soloud stdc++exp windowscodecs d2d1 winmm kernel32 user32 gdi32)
+link_libraries(soloud stdc++exp windowscodecs dinput8 dxguid d2d1 winmm kernel32 user32 gdi32)
 add_compile_definitions(UNICODE)
 add_link_options(-municode)
 

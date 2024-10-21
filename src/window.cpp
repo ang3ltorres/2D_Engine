@@ -8,6 +8,7 @@
 std::function<void(unsigned int, unsigned int)> Window::resizedCallback = nullptr;
 
 MSG Window::msg;
+WNDCLASSEX Window::windowClass;
 HWND Window::hwnd;
 LONG_PTR Window::savedStyle;
 RECT Window::savedRect;
@@ -18,8 +19,6 @@ int Window::height = 0;
 unsigned int Window::scale = 1;
 unsigned int Window::offsetX = 0;
 unsigned int Window::offsetY = 0;
-
-WNDCLASSEX windowClass;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {	

@@ -19,6 +19,7 @@ public:
 
 	static std::function<void(unsigned int, unsigned int)> resizedCallback;
 	
+	static WNDCLASSEX windowClass;
 	static HWND hwnd;
 	static MSG msg;
 	static LONG_PTR savedStyle;
