@@ -24,15 +24,15 @@ void resized(unsigned int width, unsigned int height)
 
 Game::Game(HINSTANCE &hInstance, int nCmdShow)
 {
-	windowWidth = 256;
-	windowHeight = 240;
+	windowWidth = 800;
+	windowHeight = 600;
 
 	Window::initialize(windowWidth, windowHeight, "D2D UwU", hInstance, nCmdShow);
 	Graphics::initialize();
 	Audio::initialize();
 	Input::initialize();
 
-	rt = new RenderTexture(256, 240);
+	rt = new RenderTexture(256, 256);
 	Window::resizedCallback = &resized;
 	Graphics::data = rt;
 	Window::resizedCallback(windowWidth, windowHeight);
@@ -62,7 +62,7 @@ void Game::loop()
 
 		Graphics::beginDraw();
 			Graphics::clear({0, 100, 255});
-			rt->destination = Rect{ (float)Window::offsetX, (float)Window::offsetY, 256.0f * Window::scale, 240.0f * Window::scale };
+			rt->destination = Rect{ (float)Window::offsetX, (float)Window::offsetY, rt->texture->width * Window::scale, rt->texture->height * Window::scale };
 			rt->draw();
 		Graphics::endDraw();
 	}

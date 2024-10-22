@@ -151,9 +151,9 @@ void Graphics::toggleFullscreen()
 		// Re-Center window
 		SetWindowLongPtr(Window::hwnd, GWL_STYLE, Window::savedStyle & ~WS_POPUP);
 		SetWindowPos(Window::hwnd, HWND_NOTOPMOST,
-					posX, posY,
-					Window::savedRect.right - Window::savedRect.left, Window::savedRect.bottom - Window::savedRect.top,
-					SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
+			posX, posY,
+			Window::savedRect.right - Window::savedRect.left, Window::savedRect.bottom - Window::savedRect.top,
+			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
 	}
 }
 

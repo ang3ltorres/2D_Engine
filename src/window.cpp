@@ -83,12 +83,14 @@ void Window::initialize(int width, int height, const std::string &windowName, HI
 		posX, posY, rect.right - rect.left, rect.bottom - rect.top,
 		NULL, NULL, hInstance, NULL);
 	ShowWindow(Window::hwnd, nCmdShow);
+	SetCursor(LoadCursor(NULL, IDC_ARROW));
 
 	savedStyle = GetWindowLongPtr(hwnd, GWL_STYLE);
 	GetWindowRect(hwnd, &savedRect);
 
 	ZeroMemory(&Window::msg, sizeof(MSG));
 	Window::msg.message = WM_NULL;
+
 }
 
 void Window::finalize()
