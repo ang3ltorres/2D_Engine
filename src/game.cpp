@@ -4,6 +4,7 @@
 #include "graphics.hpp"
 #include "audio.hpp"
 #include "input.hpp"
+#include "player.hpp"
 //*--------------------------
 //*--------------------------
 
@@ -33,6 +34,7 @@ Game::Game(HINSTANCE &hInstance, int nCmdShow)
 	Input::initialize();
 
 	rt = new RenderTexture(256, 256);
+	player = new Player();
 	Window::resizedCallback = &resized;
 	Graphics::data = rt;
 	Window::resizedCallback(windowWidth, windowHeight);
@@ -40,6 +42,7 @@ Game::Game(HINSTANCE &hInstance, int nCmdShow)
 
 Game::~Game()
 {
+	delete player;
 	delete rt;
 	Input::finalize();
 	Audio::finalize();
@@ -75,11 +78,13 @@ void Game::loop()
 
 void Game::update()
 {
-	if (Input::keyPressed[Input::F11])
-		Graphics::toggleFullscreen();
+	if (Input::keyPressed[Input::F11]) Graphics::toggleFullscreen();
+	if (Input::key[Input::ESC]) Window::forceClose = true;
+
+	player->update();
 }
 
 void Game::draw()
 {
-
+	player->draw();
 }

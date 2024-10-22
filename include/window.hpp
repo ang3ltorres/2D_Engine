@@ -16,6 +16,7 @@ public:
 	static void finalize();
 
 	static bool shouldClose();
+	static bool forceClose;
 
 	static std::function<void(unsigned int, unsigned int)> resizedCallback;
 	

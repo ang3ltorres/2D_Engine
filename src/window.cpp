@@ -5,11 +5,13 @@
 #include <windows.h>
 #include <d2d1.h>
 
+bool Window::forceClose = false;
+
 std::function<void(unsigned int, unsigned int)> Window::resizedCallback = nullptr;
 
-MSG Window::msg;
 WNDCLASSEX Window::windowClass;
 HWND Window::hwnd;
+MSG Window::msg;
 LONG_PTR Window::savedStyle;
 RECT Window::savedRect;
 
@@ -103,6 +105,9 @@ void Window::finalize()
 
 bool Window::shouldClose()
 {
+	if (forceClose)
+		return true;
+
 	while (PeekMessage(&Window::msg, NULL, 0, 0, PM_REMOVE))
 	{
 		if (Window::msg.message == WM_QUIT)

@@ -118,7 +118,7 @@ void Graphics::initialize()
 	currentTarget = render;
 
 	// Create default brush
-	const D2D1_COLOR_F color = { .r = 0.0f, .g = 0.0f, .b = 0.0f, .a = 0.0f };
+	const D2D1_COLOR_F color = { .r = 0.0f, .g = 0.0f, .b = 0.0f, .a = 1.0f };
 	render->CreateSolidColorBrush(color, &brush);
 }
 
