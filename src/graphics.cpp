@@ -124,7 +124,6 @@ void Graphics::initialize()
 
 void Graphics::finalize()
 {
-	CoUninitialize();
 	brush->Release();
 	render->Release();
 	factory->Release();
