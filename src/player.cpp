@@ -1,23 +1,24 @@
 #include "player.hpp"
-
+#include <print>
 #include "graphics.hpp"
 
 Player::Player()
+: Entity(), rect(0, 0, 32, 32)
 {
 	
 }
 
 Player::~Player()
 {
-
+	std::println("DESTRUCTOR");
 }
 
 void Player::update()
 {
-
+	rect.pos.x++;
 }
 
 void Player::draw()
 {
-	Graphics::currentTarget->FillRectangle(D2D1_RECT_F {0.0f, 0.0f, 32.0f, 32.0f}, Graphics::brush);
+	rect.draw(Color{255, 0, 0});
 }

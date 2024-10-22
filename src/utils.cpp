@@ -64,3 +64,25 @@ void Rect::draw(const Color &color)
 	Graphics::currentTarget->FillRectangle({pos.x, pos.y, pos.x + size.x, pos.y + size.y}, Graphics::brush);
 }
 
+bool Rect::collision(const Rect &other)
+{
+	static float thisRight   = 0.0f;
+	static float thisBottom  = 0.0f;
+	static float otherRight  = 0.0f;
+	static float otherBottom = 0.0f;
+
+	thisRight   = pos.x + size.x;
+	thisBottom  = pos.y + size.y;
+	otherRight  = other.pos.x + other.size.x;
+	otherBottom = other.pos.y + other.size.y;
+
+	if (
+		thisRight < other.pos.x ||
+		pos.x > otherRight ||
+		thisBottom < other.pos.y ||
+		pos.y > otherBottom)
+	return false;
+
+	return true;
+}
+

@@ -3,7 +3,7 @@
 class Entity
 {
 public:
-	Entity() = default;
+	Entity();
 	Entity(const Entity&) = delete;
 	virtual ~Entity() = default;
 

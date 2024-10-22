@@ -8,6 +8,9 @@
 //*--------------------------
 //*--------------------------
 
+std::vector<Entity*> Game::entity;
+
+
 // Resized callback
 void resized(unsigned int width, unsigned int height)
 {
@@ -42,7 +45,10 @@ Game::Game(HINSTANCE &hInstance, int nCmdShow)
 
 Game::~Game()
 {
-	delete player;
+	for (auto &i : entity)
+		i->~Entity();
+	entity.clear();
+
 	delete rt;
 	Input::finalize();
 	Audio::finalize();
@@ -81,10 +87,12 @@ void Game::update()
 	if (Input::keyPressed[Input::F11]) Graphics::toggleFullscreen();
 	if (Input::key[Input::ESC]) Window::forceClose = true;
 
-	player->update();
+	for (auto &i : entity)
+		i->update();
 }
 
 void Game::draw()
 {
-	player->draw();
+	for (auto &i : entity)
+		i->draw();
 }

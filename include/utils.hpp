@@ -39,8 +39,10 @@ struct Rect
 	Rect(const Vector2 &pos, const Vector2 &size);
 	~Rect() = default;
 
+
 	Vector2 pos;
 	Vector2 size;
 
 	void draw(const Color &color);
+	bool collision(const Rect &other);
 };
