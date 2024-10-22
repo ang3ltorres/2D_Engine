@@ -62,7 +62,12 @@ void Game::loop()
 
 		Graphics::beginDraw();
 			Graphics::clear({0, 100, 255});
-			rt->destination = Rect{ (float)Window::offsetX, (float)Window::offsetY, rt->texture->width * Window::scale, rt->texture->height * Window::scale };
+			rt->destination = Rect{
+				Window::offsetX,
+				Window::offsetY,
+				rt->texture->width * Window::scale,
+				rt->texture->height * Window::scale
+			};
 			rt->draw();
 		Graphics::endDraw();
 	}

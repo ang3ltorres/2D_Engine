@@ -19,8 +19,8 @@ Sprite::Sprite(Texture *texture)
 {
 	origin = {0.0f, 0.0f};
 	rotation = 0.0f;
-	destination = {0.0f, 0.0f, (float)texture->width, (float)texture->height};
-	source = {0.0f, 0.0f, (float)texture->width, (float)texture->height};
+	destination = {0.0f, 0.0f, texture->width, texture->height};
+	source = {0.0f, 0.0f, texture->width, texture->height};
 
 	totalFrames = 0;
 	currentFrame = 0;

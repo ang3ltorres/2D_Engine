@@ -51,8 +51,8 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height)
 
 	origin = Vector2( {0.0f, 0.0f} );
 	rotation = 0.0f;
-	destination = Rect( 0.0f, 0.0f, (float)width, (float)height );
-	source = Rect( 0.0f, 0.0f, (float)width, (float)height );
+	destination = Rect( 0.0f, 0.0f, width, height );
+	source = Rect( 0.0f, 0.0f, width, height );
 
 	totalFrames = 0;
 	currentFrame = 0;
