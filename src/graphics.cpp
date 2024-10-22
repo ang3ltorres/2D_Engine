@@ -80,7 +80,7 @@ void RenderTexture::endDraw()
 	renderTarget->EndDraw();
 }
 
-void Graphics::initialize(HWND &hwnd)
+void Graphics::initialize()
 {
 	// Create factory
 	const D2D1_FACTORY_OPTIONS factoryOptions = { .debugLevel = D2D1_DEBUG_LEVEL::D2D1_DEBUG_LEVEL_NONE };
@@ -88,7 +88,7 @@ void Graphics::initialize(HWND &hwnd)
 
 	// Create render target
 	RECT rect;
-	GetClientRect(hwnd, &rect);
+	GetClientRect(Window::hwnd, &rect);
 	const D2D1_RENDER_TARGET_PROPERTIES rtProperties =
 	{
 		.type = D2D1_RENDER_TARGET_TYPE_HARDWARE,
@@ -101,7 +101,7 @@ void Graphics::initialize(HWND &hwnd)
 
 	const D2D1_HWND_RENDER_TARGET_PROPERTIES hwndRtProperties =
 	{
-		.hwnd = hwnd,
+		.hwnd = Window::hwnd,
 		.pixelSize = { .width = (UINT32)rect.right, .height = (UINT32)rect.bottom },
 		.presentOptions = D2D1_PRESENT_OPTIONS::D2D1_PRESENT_OPTIONS_NONE
 		// Disable VSync
@@ -130,16 +130,16 @@ void Graphics::finalize()
 	factory->Release();
 }
 
-void Graphics::toggleFullscreen(HWND hwnd)
+void Graphics::toggleFullscreen()
 {
-	LONG_PTR style = GetWindowLongPtr(hwnd, GWL_STYLE);
+	LONG_PTR style = GetWindowLongPtr(Window::hwnd, GWL_STYLE);
 
 	if ((style & WS_POPUP) == 0)
 	{
-		GetWindowRect(hwnd, &Window::savedRect);
+		GetWindowRect(Window::hwnd, &Window::savedRect);
 
-		SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-		SetWindowPos(hwnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_FRAMECHANGED);
+		SetWindowLong(Window::hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		SetWindowPos(Window::hwnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_FRAMECHANGED);
 	}
 	else
 	{
@@ -150,8 +150,8 @@ void Graphics::toggleFullscreen(HWND hwnd)
 		int posY = (screenHeight - (Window::savedRect.bottom - Window::savedRect.top)) / 2;
 
 		// Re-Center window
-		SetWindowLongPtr(hwnd, GWL_STYLE, Window::savedStyle & ~WS_POPUP);
-		SetWindowPos(hwnd, HWND_NOTOPMOST,
+		SetWindowLongPtr(Window::hwnd, GWL_STYLE, Window::savedStyle & ~WS_POPUP);
+		SetWindowPos(Window::hwnd, HWND_NOTOPMOST,
 					posX, posY,
 					Window::savedRect.right - Window::savedRect.left, Window::savedRect.bottom - Window::savedRect.top,
 					SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);

@@ -8,6 +8,9 @@ public:
 		LEFT,
 		DOWN,
 		RIGHT,
+		
+		F11,
+		ESC,
 
 		COUNT
 	};

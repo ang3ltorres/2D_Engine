@@ -25,10 +25,10 @@ private:
 	~Graphics() = default;
 	
 public:
-	static void initialize(HWND &hwnd);
+	static void initialize();
 	static void finalize();
 
-	static void toggleFullscreen(HWND hwnd);
+	static void toggleFullscreen();
 	static void calculateDeltaTime();
 	static void resetTarget();
 	static void clear(const Color &color);

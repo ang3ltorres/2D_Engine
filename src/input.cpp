@@ -38,10 +38,12 @@ void Input::update()
 	memset(keyPressed, 0, sizeof(keyPressed));
 	memset(keyReleased, 0, sizeof(keyReleased));
 
-	key[Actions::UP]    = keyboardData[DIK_W] & 0x80;
-	key[Actions::LEFT]  = keyboardData[DIK_A] & 0x80;
-	key[Actions::DOWN]  = keyboardData[DIK_S] & 0x80;
-	key[Actions::RIGHT] = keyboardData[DIK_D] & 0x80;
+	key[Actions::UP]    = keyboardData[DIK_W]      & 0x80;
+	key[Actions::LEFT]  = keyboardData[DIK_A]      & 0x80;
+	key[Actions::DOWN]  = keyboardData[DIK_S]      & 0x80;
+	key[Actions::RIGHT] = keyboardData[DIK_D]      & 0x80;
+	key[Actions::F11]   = keyboardData[DIK_F11]    & 0x80;
+	key[Actions::ESC]   = keyboardData[DIK_ESCAPE] & 0x80;
 
 	for (int i = 0; i < Actions::COUNT; ++i) {
 		
@@ -49,14 +51,16 @@ void Input::update()
 
 		switch (static_cast<Actions>(i)) {
 
-			case Actions::UP:    dikCode = DIK_W; break;
-			case Actions::LEFT:  dikCode = DIK_A; break;
-			case Actions::DOWN:  dikCode = DIK_S; break;
-			case Actions::RIGHT: dikCode = DIK_D; break;
+			case Actions::UP:    dikCode = DIK_W;      break;
+			case Actions::LEFT:  dikCode = DIK_A;      break;
+			case Actions::DOWN:  dikCode = DIK_S;      break;
+			case Actions::RIGHT: dikCode = DIK_D;      break;
+			case Actions::F11:   dikCode = DIK_F11;    break;
+			case Actions::ESC:   dikCode = DIK_ESCAPE; break;
 			default: continue;
 		}
 
-		keyPressed[i] = (key[i] && !(keyboardDataOld[dikCode] & 0x80));
+		keyPressed[i]  = (key[i] && !(keyboardDataOld[dikCode] & 0x80));
 		keyReleased[i] = (!key[i] && (keyboardDataOld[dikCode] & 0x80));
 	}
 }

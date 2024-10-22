@@ -30,6 +30,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			return 0;
 		}
 
+		case WM_CLOSE:
+		{
+			DestroyWindow(hwnd);
+			return 0;
+		}
+
 		case WM_SIZE:
 		{
 			RECT rc;
@@ -42,18 +48,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 			return 0;
 		}
-
-		case WM_KEYDOWN:
-		{
-			switch (wParam)
-			{
-				case VK_F11:
-				{
-					Graphics::toggleFullscreen(hwnd);
-					break;
-				}	
-			}
-		}
 	}
 
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -61,6 +55,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 void Window::initialize(int width, int height, const std::string &windowName, HINSTANCE hInstance, int nCmdShow)
 {
+	// Initilize COM
+	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
 	Window::width = width;
 	Window::height = height;
 
@@ -92,9 +89,6 @@ void Window::initialize(int width, int height, const std::string &windowName, HI
 
 	ZeroMemory(&Window::msg, sizeof(MSG));
 	Window::msg.message = WM_NULL;
-
-	// Initilize COM
-	CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 }
 
 void Window::finalize()
