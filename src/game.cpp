@@ -45,10 +45,6 @@ Game::Game(HINSTANCE &hInstance, int nCmdShow)
 
 Game::~Game()
 {
-	for (auto &i : entity)
-		i->~Entity();
-	entity.clear();
-
 	delete rt;
 	Input::finalize();
 	Audio::finalize();
@@ -62,7 +58,7 @@ void Game::loop()
 	{
 		Graphics::calculateDeltaTime();
 		Input::update();
-		update();
+		Game::update();
 
 		rt->beginDraw();
 			Graphics::clear({0, 255, 0});

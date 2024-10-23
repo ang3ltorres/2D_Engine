@@ -5,8 +5,9 @@
 
 #include <d2d1.h>
 
-struct RenderTexture : public Sprite
+class RenderTexture : public Sprite
 {
+public:
 	RenderTexture() = delete;
 	RenderTexture(const RenderTexture &other);
 	RenderTexture(unsigned int width, unsigned int height);

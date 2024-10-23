@@ -6,11 +6,11 @@
 SoLoud::Soloud soloud;
 
 void Audio::initialize() {
-    soloud.init(SoLoud::Soloud::CLIP_ROUNDOFF, SoLoud::Soloud::MINIAUDIO);
+  soloud.init(SoLoud::Soloud::CLIP_ROUNDOFF, SoLoud::Soloud::MINIAUDIO);
 }
 
 void Audio::finalize() {
-    soloud.deinit();
+  soloud.deinit();
 }
 
 Sound::Sound(const std::string &fileName)

@@ -1,5 +1,4 @@
 #include "player.hpp"
-#include <print>
 #include "graphics.hpp"
 
 Player::Player()
@@ -10,7 +9,7 @@ Player::Player()
 
 Player::~Player()
 {
-	std::println("DESTRUCTOR");
+
 }
 
 void Player::update()
