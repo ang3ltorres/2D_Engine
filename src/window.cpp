@@ -26,15 +26,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {	
 	switch (uMsg)
 	{
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
-
 		case WM_CLOSE:
 		{
 			DestroyWindow(hwnd);
+			return 0;
+		}
+
+		case WM_DESTROY:
+		{
+			PostQuitMessage(0);
 			return 0;
 		}
 
@@ -76,15 +76,23 @@ void Window::initialize(int width, int height, const std::string &windowName, HI
 	AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, false, WS_EX_OVERLAPPEDWINDOW);
 
 	// Calculate window position to center it on the screen
-	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	int screenWidth  = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
 	int posX = (screenWidth - (rect.right - rect.left)) / 2;
 	int posY = (screenHeight - (rect.bottom - rect.top)) / 2;
 
-	Window::hwnd = CreateWindowEx(WS_EX_OVERLAPPEDWINDOW, L"MainWindow", toWideString(windowName).c_str(), WS_OVERLAPPEDWINDOW,
+	Window::hwnd = CreateWindowEx(
+		WS_EX_OVERLAPPEDWINDOW, L"MainWindow", toWideString(windowName).c_str(), WS_OVERLAPPEDWINDOW,
 		posX, posY, rect.right - rect.left, rect.bottom - rect.top,
-		NULL, NULL, hInstance, NULL);
+		NULL, NULL, hInstance, NULL
+	);
+	
+	// Disable focus (dinput workaround)
 	ShowWindow(Window::hwnd, nCmdShow);
+	SetForegroundWindow(Window::hwnd);
+	SetActiveWindow(Window::hwnd);
+	SetFocus(Window::hwnd);
 	SetCursor(LoadCursor(NULL, IDC_ARROW));
 
 	savedStyle = GetWindowLongPtr(hwnd, GWL_STYLE);
@@ -92,7 +100,6 @@ void Window::initialize(int width, int height, const std::string &windowName, HI
 
 	ZeroMemory(&Window::msg, sizeof(MSG));
 	Window::msg.message = WM_NULL;
-
 }
 
 void Window::finalize()

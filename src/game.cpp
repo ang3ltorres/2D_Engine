@@ -10,7 +10,6 @@
 
 std::vector<Entity*> Game::entity;
 
-
 // Resized callback
 void resized(unsigned int width, unsigned int height)
 {
@@ -21,7 +20,6 @@ void resized(unsigned int width, unsigned int height)
 	unsigned int scaleY = height / renderSize.height;
 
 	Window::scale = scaleX < scaleY ? scaleX : scaleY;
-
 	Window::offsetX = (width - renderSize.width * Window::scale) / 2;
 	Window::offsetY = (height - renderSize.height * Window::scale) / 2;
 }

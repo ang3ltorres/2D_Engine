@@ -3,8 +3,6 @@
 #include "utils.hpp"
 #include "sprite.hpp"
 
-#include <d2d1.h>
-
 class RenderTexture : public Sprite
 {
 public:
