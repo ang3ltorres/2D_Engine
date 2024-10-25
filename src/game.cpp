@@ -8,6 +8,8 @@
 //*--------------------------
 //*--------------------------
 
+static Sound *sound;
+
 std::vector<Entity*> Game::entity;
 
 // Resized callback
@@ -39,10 +41,13 @@ Game::Game(HINSTANCE &hInstance, int nCmdShow)
 	Window::resizedCallback = &resized;
 	Graphics::data = rt;
 	Window::resizedCallback(windowWidth, windowHeight);
+
+	sound = new Sound("sound.ogg");
 }
 
 Game::~Game()
 {
+	delete sound;
 	delete rt;
 	Input::finalize();
 	Audio::finalize();
@@ -80,6 +85,7 @@ void Game::update()
 {
 	if (Input::keyPressed[Input::F11]) Graphics::toggleFullscreen();
 	if (Input::key[Input::ESC]) Window::forceClose = true;
+	if (Input::keyPressed[Input::DOWN]) sound->play();
 
 	for (auto &i : entity)
 		i->update();

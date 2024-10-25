@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <dsound.h>
 
 class Audio 
 {
@@ -15,8 +16,9 @@ public:
 	Sound(const std::string &fileName);
 	~Sound();
 	void play();
-
-	void *wav;
-	unsigned char *data;
-	int sampleCount;
+	
+	char *buffer;
+	unsigned long bufferSize;
+	LPDIRECTSOUNDBUFFER secondaryBuffer;
+	DSBUFFERDESC secondaryBufferDes;
 };
