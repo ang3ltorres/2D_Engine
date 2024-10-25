@@ -3,7 +3,6 @@
 
 #include <codecvt>
 #include <locale>
-#include <string>
 
 std::wstring toWideString(const std::string &string) {
 

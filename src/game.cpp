@@ -10,8 +10,6 @@
 
 static Sound *sound;
 
-std::vector<Entity*> Game::entity;
-
 // Resized callback
 void resized(unsigned int width, unsigned int height)
 {
@@ -42,7 +40,7 @@ Game::Game(HINSTANCE &hInstance, int nCmdShow)
 	Graphics::data = rt;
 	Window::resizedCallback(windowWidth, windowHeight);
 
-	sound = new Sound("sound.ogg");
+	sound = new Sound("../sound.ogg");
 }
 
 Game::~Game()
@@ -87,12 +85,10 @@ void Game::update()
 	if (Input::key[Input::ESC]) Window::forceClose = true;
 	if (Input::keyPressed[Input::DOWN]) sound->play();
 
-	for (auto &i : entity)
-		i->update();
+	player->update();
 }
 
 void Game::draw()
 {
-	for (auto &i : entity)
-		i->draw();
+	player->draw();
 }

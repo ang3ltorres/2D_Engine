@@ -3,9 +3,9 @@
 class Entity
 {
 public:
-	Entity();
+	Entity() = default;
 	Entity(const Entity&) = delete;
-	virtual ~Entity();
+	virtual ~Entity() = default;
 
 	virtual void update() = 0;
 	virtual void draw() = 0;

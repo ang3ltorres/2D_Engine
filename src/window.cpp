@@ -6,8 +6,7 @@
 #include <d2d1.h>
 
 bool Window::forceClose = false;
-
-std::function<void(unsigned int, unsigned int)> Window::resizedCallback = nullptr;
+void (*Window::resizedCallback)(unsigned int width, unsigned int height) = nullptr;
 
 WNDCLASSEX Window::windowClass;
 HWND Window::hwnd;

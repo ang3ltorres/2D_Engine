@@ -2,7 +2,6 @@
 #include "window.hpp"
 
 #include <Windows.h>
-#include <cstdio>
 
 // Local
 LARGE_INTEGER frequency;

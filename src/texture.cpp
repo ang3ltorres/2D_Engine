@@ -2,10 +2,6 @@
 #include "graphics.hpp"
 #include "utils.hpp"
 
-#include <filesystem>
-#include <iostream>
-#include <print>
-#include <format>
 #include <wincodec.h>
 
 Texture::Texture(const std::string &fileName)
@@ -59,7 +55,7 @@ Texture::Texture(const std::string &fileName)
 	height = textureSize.height;
 
 	// Print message
-	std::println("Texture: \"{}\" loaded\nWidth: {}\nHeight: {}\n", std::filesystem::path(fileName).filename().string(), width, height);
+	// std::printf("Texture: \"{}\" loaded\nWidth: {}\nHeight: {}\n", std::filesystem::path(fileName).filename().string(), width, height);
 
 	wicConverter->Release();
 	wicFrame->Release();

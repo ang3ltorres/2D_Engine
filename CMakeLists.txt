@@ -11,7 +11,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 	add_compile_options(-fmax-errors=1)
 endif()
 
-link_libraries(stdc++exp windowscodecs dinput8 dxguid d2d1 dsound vorbisfile vorbis ogg winmm kernel32 user32)
+link_libraries(dinput8 dxguid d2d1 dsound vorbisfile vorbis ogg winmm kernel32 user32)
 add_compile_definitions(UNICODE)
 add_link_options(-municode)
 

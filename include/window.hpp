@@ -3,7 +3,6 @@
 #include <string>
 #include <windef.h>
 #include <winuser.h>
-#include <functional>
 
 class Window
 {
@@ -18,7 +17,7 @@ public:
 	static bool shouldClose();
 	static bool forceClose;
 
-	static std::function<void(unsigned int, unsigned int)> resizedCallback;
+	static void (*resizedCallback)(unsigned int width, unsigned int height);
 	
 	static WNDCLASSEX windowClass;
 	static HWND hwnd;
