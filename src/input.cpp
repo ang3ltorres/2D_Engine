@@ -18,7 +18,7 @@ void Input::initialize()
 	DirectInput8Create(Window::windowClass.hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&di, NULL);
 	di->CreateDevice(GUID_SysKeyboard, &keyboard, NULL);
 	keyboard->SetDataFormat(&c_dfDIKeyboard);
-	keyboard->SetCooperativeLevel(Window::hwnd, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
+	keyboard->SetCooperativeLevel(Window::hwnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE);
 	keyboard->Acquire();
 }
 
