@@ -9,14 +9,14 @@
 
 #define secondaryBuffer (*(LPDIRECTSOUNDBUFFER*)buffer)
 
-static LPDIRECTSOUND8 dsound = nullptr;
+static LPDIRECTSOUND dsound = nullptr;
 static LPDIRECTSOUNDBUFFER primaryBuffer = nullptr;
 static WAVEFORMATEX waveFormat;
 static DSBUFFERDESC primaryBufferDesc;
 
 void Audio::initialize()
 {
-	DirectSoundCreate8(nullptr, &dsound, nullptr);
+	DirectSoundCreate(nullptr, &dsound, nullptr);
 	dsound->SetCooperativeLevel(Window::hwnd, DSSCL_PRIORITY);
 
 	ZeroMemory(&waveFormat, sizeof(WAVEFORMATEX));
@@ -51,7 +51,7 @@ Sound::Sound(const std::string &fileName)
 	DSBUFFERDESC secondaryBufferDes;
 	ZeroMemory(&secondaryBufferDes, sizeof(DSBUFFERDESC));
 	secondaryBufferDes.dwSize = sizeof(DSBUFFERDESC);
-	secondaryBufferDes.dwFlags = 0;
+	secondaryBufferDes.dwFlags = DSBCAPS_CTRLDEFAULT;
 	secondaryBufferDes.dwBufferBytes = bufferSize;
 	secondaryBufferDes.lpwfxFormat = &waveFormat;
 
@@ -71,6 +71,12 @@ Sound::Sound(const std::string &fileName)
 		totalRead += bytesRead;
 	}
 	secondaryBuffer->Unlock(bufferData, totalRead, nullptr, 0);
+	
+	// Preload
+	secondaryBuffer->Play(0, 0, 0);
+	secondaryBuffer->SetCurrentPosition(0);
+	secondaryBuffer->Stop();
+
 	ov_clear(&vorbisFile);
 }
 
