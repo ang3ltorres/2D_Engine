@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <dsound.h>
 
 class Audio 
 {
@@ -17,8 +16,7 @@ public:
 	~Sound();
 	void play();
 	
-	char *buffer;
 	unsigned long bufferSize;
-	LPDIRECTSOUNDBUFFER secondaryBuffer;
-	DSBUFFERDESC secondaryBufferDes;
+	char *bufferData;
+	void *buffer;
 };
