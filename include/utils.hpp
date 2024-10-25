@@ -43,6 +43,6 @@ struct Rect
 	Vector2 pos;
 	Vector2 size;
 
-	void draw(const Color &color);
+	void draw(const Color &color, bool fill = true);
 	bool collision(const Rect &other);
 };

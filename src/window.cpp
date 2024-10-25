@@ -88,7 +88,6 @@ void Window::initialize(int width, int height, const std::string &windowName, HI
 		NULL, NULL, hInstance, NULL
 	);
 	
-	// Disable focus (dinput workaround)
 	ShowWindow(Window::hwnd, nCmdShow);
 	SetForegroundWindow(Window::hwnd);
 	SetActiveWindow(Window::hwnd);
