@@ -3,7 +3,6 @@
 
 class RenderTexture;
 class Player;
-class Entity;
 
 class Game
 {

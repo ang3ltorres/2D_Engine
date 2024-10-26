@@ -71,18 +71,20 @@ Sound::Sound(const std::string &fileName)
 		totalRead += bytesRead;
 	}
 	secondaryBuffer->Unlock(bufferData, totalRead, nullptr, 0);
-	
-	// Preload
-	secondaryBuffer->Play(0, 0, 0);
-	secondaryBuffer->SetCurrentPosition(0);
-	secondaryBuffer->Stop();
-
 	ov_clear(&vorbisFile);
+	preload();
 }
 
 Sound::~Sound()
 {
 	secondaryBuffer->Release();
+}
+
+void Sound::preload()
+{
+	secondaryBuffer->Play(0, 0, 0);
+	secondaryBuffer->SetCurrentPosition(0);
+	secondaryBuffer->Stop();
 }
 
 void Sound::play()

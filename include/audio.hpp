@@ -14,6 +14,7 @@ class Sound
 public:
 	Sound(const std::string &fileName);
 	~Sound();
+	void preload();
 	void play();
 	
 	unsigned long bufferSize;
