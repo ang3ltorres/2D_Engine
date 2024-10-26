@@ -14,10 +14,10 @@ Player::~Player()
 
 void Player::update()
 {
-	rect.pos.x++;
+	rect.pos.x += 0.1f;
 }
 
 void Player::draw()
 {
-	Graphics::drawRectangle(rect, {255, 0, 0, 255}, true);
+	Graphics::drawRectangle(rect, {255, 0, 0, 255}, false);
 }

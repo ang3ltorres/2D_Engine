@@ -73,6 +73,7 @@ RenderTexture::RenderTexture(unsigned int width, unsigned int height)
 	texture->height = height;
 
 	renderTarget->GetBitmap(&texture->bitmap);
+	renderTarget->SetAntialiasMode(D2D1_ANTIALIAS_MODE::D2D1_ANTIALIAS_MODE_ALIASED);
 }
 
 RenderTexture::~RenderTexture()
@@ -121,6 +122,7 @@ void Graphics::initialize()
 	};
 
 	factory->CreateHwndRenderTarget(rtProperties, hwndRtProperties, &render);
+	render->SetAntialiasMode(D2D1_ANTIALIAS_MODE::D2D1_ANTIALIAS_MODE_ALIASED);
 
 	// Delta Time
 	QueryPerformanceFrequency(&frequency);
