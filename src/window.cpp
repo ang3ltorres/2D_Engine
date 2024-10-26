@@ -1,9 +1,7 @@
 #include "window.hpp"
 #include "utils.hpp"
-#include "graphics.hpp"
 
 #include <windows.h>
-#include <d2d1.h>
 
 bool Window::forceClose = false;
 void (*Window::resizedCallback)(unsigned int width, unsigned int height) = nullptr;

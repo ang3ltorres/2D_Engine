@@ -3,7 +3,6 @@
 
 #include <windows.h>
 #include <dsound.h>
-#include <string>
 #include <ogg/ogg.h>
 #include <vorbis/vorbisfile.h>
 
