@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <d2d1.h>
 
 std::wstring toWideString(const std::string &string);
 
@@ -17,8 +16,6 @@ struct Color
 	unsigned char b;
 	unsigned char a;
 };
-
-D2D_COLOR_F D2DColor(const Color &color);
 
 struct Vector2
 {
@@ -39,10 +36,8 @@ struct Rect
 	Rect(const Vector2 &pos, const Vector2 &size);
 	~Rect() = default;
 
-
 	Vector2 pos;
 	Vector2 size;
 
-	void draw(const Color &color, bool fill = true);
 	bool collision(const Rect &other);
 };

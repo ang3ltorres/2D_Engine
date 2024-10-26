@@ -3,6 +3,12 @@
 #include "utils.hpp"
 #include "sprite.hpp"
 
+class ID2D1BitmapRenderTarget;
+class ID2D1Factory;
+class ID2D1HwndRenderTarget;
+class ID2D1SolidColorBrush;
+class ID2D1RenderTarget;
+
 class RenderTexture : public Sprite
 {
 public:
@@ -34,6 +40,9 @@ public:
 
 	static void beginDraw();
 	static void endDraw();
+
+	//* SHAPES
+	static void drawRectangle(const Rect &rect, const Color &color = {0, 0, 0, 255}, bool fill = true);
 
 	static double deltaTime;
 

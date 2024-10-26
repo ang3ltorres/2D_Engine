@@ -2,18 +2,31 @@
 #include "window.hpp"
 
 #include <Windows.h>
+#include <d2d1.h>
 
-// Local
+//& Local
 LARGE_INTEGER frequency;
 LARGE_INTEGER lastTime;
 
-// Static members
+//& Static members
 double Graphics::deltaTime = 0.0f;
 void *Graphics::data = nullptr;
 ID2D1Factory *Graphics::factory = nullptr;
 ID2D1HwndRenderTarget *Graphics::render = nullptr;
 ID2D1SolidColorBrush *Graphics::brush = nullptr;
 ID2D1RenderTarget *Graphics::currentTarget = nullptr;
+
+//& Static
+static inline D2D_COLOR_F D2DColor(const Color &color)
+{
+	return
+	{
+		color.r / 255.0f,
+		color.g / 255.0f,
+		color.b / 255.0f,
+		color.a / 255.0f
+	};
+}
 
 RenderTexture::RenderTexture(const RenderTexture &other)
 : RenderTexture::RenderTexture(other.texture->bitmap->GetPixelSize().width, other.texture->bitmap->GetPixelSize().height)
@@ -179,7 +192,18 @@ void Graphics::beginDraw()
 	resetTarget();
 	render->BeginDraw();
 }
+
 void Graphics::endDraw()
 {
 	render->EndDraw();
+}
+
+void Graphics::drawRectangle(const Rect &rect, const Color &color, bool fill)
+{
+	Graphics::brush->SetColor(D2DColor(color));
+	
+	if (fill)
+		Graphics::currentTarget->FillRectangle({rect.pos.x, rect.pos.y, rect.pos.x + rect.size.x, rect.pos.y + rect.size.y}, Graphics::brush);
+	else
+		Graphics::currentTarget->DrawRectangle({rect.pos.x, rect.pos.y, rect.pos.x + rect.size.x, rect.pos.y + rect.size.y}, Graphics::brush);
 }

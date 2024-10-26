@@ -3,6 +3,7 @@
 #include "utils.hpp"
 
 #include <wincodec.h>
+#include <d2d1.h>
 
 Texture::Texture(const std::string &fileName)
 {

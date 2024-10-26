@@ -3,6 +3,7 @@
 
 #include <codecvt>
 #include <locale>
+#include <stringapiset.h>
 
 std::wstring toWideString(const std::string &string) {
 
@@ -21,18 +22,6 @@ Color::Color(const Color &other)
 
 Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 : r(r), g(g), b(b), a(a) {}
-
-// Color to D2D_COLOR_F converter
-D2D_COLOR_F D2DColor(const Color &color)
-{
-	return
-	{
-		color.r / 255.0f,
-		color.g / 255.0f,
-		color.b / 255.0f,
-		color.a / 255.0f
-	};
-}
 
 // Struct Vector2
 Vector2::Vector2()
@@ -56,16 +45,6 @@ Rect::Rect(float x, float y, float w, float h)
 
 Rect::Rect(const Vector2 &pos, const Vector2 &size)
 : pos(pos), size(size) {}
-
-void Rect::draw(const Color &color, bool fill)
-{
-	Graphics::brush->SetColor(D2DColor(color));
-
-	if (fill)
-		Graphics::currentTarget->FillRectangle({pos.x, pos.y, pos.x + size.x, pos.y + size.y}, Graphics::brush);
-	else
-		Graphics::currentTarget->DrawRectangle({pos.x, pos.y, pos.x + size.x, pos.y + size.y}, Graphics::brush);
-}
 
 bool Rect::collision(const Rect &other)
 {

@@ -19,5 +19,5 @@ void Player::update()
 
 void Player::draw()
 {
-	rect.draw(Color{255, 0, 0});
+	Graphics::drawRectangle(rect, {255, 0, 0, 255}, true);
 }

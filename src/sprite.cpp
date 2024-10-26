@@ -1,6 +1,8 @@
 #include "sprite.hpp"
 #include "graphics.hpp"
 
+#include <d2d1.h>
+
 Sprite::Sprite()
 {
 	origin = {0.0f, 0.0f};

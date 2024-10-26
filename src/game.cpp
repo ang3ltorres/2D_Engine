@@ -6,6 +6,7 @@
 #include "input.hpp"
 #include "player.hpp"
 //*--------------------------
+#include <d2d1.h>
 //*--------------------------
 
 static Sound *sound;
