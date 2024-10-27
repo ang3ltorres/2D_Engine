@@ -27,15 +27,15 @@ void resized(unsigned int width, unsigned int height)
 
 Game::Game(HINSTANCE &hInstance, int nCmdShow)
 {
-	windowWidth = 800;
-	windowHeight = 600;
+	windowWidth = 240*4;
+	windowHeight = 135*4;
 
 	Window::initialize(windowWidth, windowHeight, "D2D UwU", hInstance, nCmdShow);
 	Graphics::initialize();
 	Audio::initialize();
 	Input::initialize();
 
-	rt = new RenderTexture(256, 256);
+	rt = new RenderTexture(240, 135);
 	player = new Player();
 	Window::resizedCallback = &resized;
 	Graphics::data = rt;

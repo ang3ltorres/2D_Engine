@@ -28,8 +28,8 @@ public:
 	static LONG_PTR savedStyle;
 	static RECT savedRect;
 
-	static int width;
-	static int height;
+	static unsigned int width;
+	static unsigned int height;
 
 	static unsigned int scale;
 	static unsigned int offsetX;

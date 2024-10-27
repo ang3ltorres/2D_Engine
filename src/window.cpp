@@ -13,8 +13,8 @@ MSG Window::msg;
 LONG_PTR Window::savedStyle;
 RECT Window::savedRect;
 
-int Window::width = 0;
-int Window::height = 0;
+unsigned int Window::width = 0;
+unsigned int Window::height = 0;
 
 unsigned int Window::scale = 1;
 unsigned int Window::offsetX = 0;
@@ -39,10 +39,15 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		case WM_SIZE:
 		{
 			RECT rc;
-			GetClientRect(Window::hwnd, &rc);
+
+			if (Window::fullscreen)
+				GetWindowRect(Window::hwnd, &rc);
+			else
+				GetClientRect(Window::hwnd, &rc);
+
 			Window::width = rc.right - rc.left;
 			Window::height = rc.bottom - rc.top;
-			
+
 			if (Window::resizedCallback)
 				Window::resizedCallback(Window::width, Window::height);
 
