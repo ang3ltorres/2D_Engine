@@ -4,6 +4,7 @@
 #include <windows.h>
 
 bool Window::forceClose = false;
+bool Window::fullscreen = false;
 void (*Window::resizedCallback)(unsigned int width, unsigned int height) = nullptr;
 
 WNDCLASSEX Window::windowClass;
@@ -121,4 +122,33 @@ bool Window::shouldClose()
 	}
 
 	return false;
+}
+
+void Window::toggleFullscreen()
+{
+	LONG_PTR style = GetWindowLongPtr(Window::hwnd, GWL_STYLE);
+	Window::fullscreen = (style & WS_POPUP) == 0;
+
+	if (Window::fullscreen)
+	{
+		GetWindowRect(Window::hwnd, &Window::savedRect);
+
+		SetWindowLong(Window::hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+		SetWindowPos(Window::hwnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_FRAMECHANGED);
+	}
+	else
+	{
+		// Calculate window position to center it on the screen
+		int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+		int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+		int posX = (screenWidth - (Window::savedRect.right - Window::savedRect.left)) / 2;
+		int posY = (screenHeight - (Window::savedRect.bottom - Window::savedRect.top)) / 2;
+
+		// Re-Center window
+		SetWindowLongPtr(Window::hwnd, GWL_STYLE, Window::savedStyle & ~WS_POPUP);
+		SetWindowPos(Window::hwnd, HWND_NOTOPMOST,
+			posX, posY,
+			Window::savedRect.right - Window::savedRect.left, Window::savedRect.bottom - Window::savedRect.top,
+			SWP_FRAMECHANGED | SWP_NOZORDER | SWP_NOOWNERZORDER);
+	}
 }

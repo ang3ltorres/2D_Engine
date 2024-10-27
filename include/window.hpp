@@ -17,6 +17,9 @@ public:
 	static bool shouldClose();
 	static bool forceClose;
 
+	static void toggleFullscreen();
+	static bool fullscreen;
+
 	static void (*resizedCallback)(unsigned int width, unsigned int height);
 	
 	static WNDCLASSEX windowClass;

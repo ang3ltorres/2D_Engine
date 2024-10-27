@@ -33,7 +33,6 @@ public:
 	static void initialize();
 	static void finalize();
 
-	static void toggleFullscreen();
 	static void calculateDeltaTime();
 	static void resetTarget();
 	static void clear(const Color &color);

@@ -82,7 +82,7 @@ void Game::loop()
 
 void Game::update()
 {
-	if (Input::keyPressed[Input::F11]) Graphics::toggleFullscreen();
+	if (Input::keyPressed[Input::F11]) Window::toggleFullscreen();
 	if (Input::key[Input::ESC]) Window::forceClose = true;
 	if (Input::keyPressed[Input::DOWN]) sound->play();
 
